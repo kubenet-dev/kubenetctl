@@ -64,7 +64,13 @@ func (r *Runner) runE(c *cobra.Command, args []string) error {
 
 	x.Step(
 		run.S("create k8s kind cluster"),
-		run.S("kind create cluster --name kubenet"),
+		run.S(`kind create cluster --name dummy --config=<(cat <<EOF
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+networking:
+  ipFamily: dual
+EOF
+			)`),
 	)
 
 	x.Step(
@@ -79,3 +85,14 @@ func (r *Runner) runE(c *cobra.Command, args []string) error {
 
 	return x.Run(ctx)
 }
+
+/*
+
+kind create cluster --name dummy --config=<(cat <<EOF
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+networking:
+  ipFamily: dual
+EOF
+)
+*/
